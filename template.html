@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Oversold Ledger · Williams %R</title>
+<style>
+  :root{
+    --paper:#fff1e5; --paper2:#fbe6d4; --ink:#33302e; --ink2:#66605a; --ink3:#9a9186;
+    --rule:#33302e; --hair:rgba(51,48,46,.28); --hair2:rgba(51,48,46,.14);
+    --red:#e3120b; --down:#b7161b; --up:#00695c; --hl:#f9e2cd;
+    --serif:Georgia,'Iowan Old Style','Times New Roman',serif;
+    --data:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;border-radius:0}
+  html{background:var(--paper)}
+  body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:14px;line-height:1.45}
+  a{color:inherit}
+  .page{max-width:1720px;margin:0 auto;padding:26px 40px 60px}
+
+  /* ── masthead ─────────────────────────────────────────── */
+  .rule-heavy{border-top:3px solid var(--rule)}
+  .rule-thin{border-top:1px solid var(--rule);margin-top:2px}
+  .folio{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0 6px;
+         font-family:var(--data);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2)}
+  .folio b{color:var(--ink);font-weight:600}
+  .folio .red{color:var(--red)}
+  .masthead{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;
+            padding:14px 0 20px;border-bottom:1px solid var(--rule)}
+  h1{font-size:54px;font-weight:400;letter-spacing:-.015em;line-height:1.02}
+  h1 .amp{font-style:italic;color:var(--red)}
+  .standfirst{margin-top:12px;font-style:italic;font-size:15.5px;color:var(--ink2);max-width:720px;line-height:1.5}
+  .standfirst b{font-style:normal;font-weight:600;color:var(--ink)}
+  .mast-right{flex-shrink:0;text-align:right;font-family:var(--data);font-size:11px;color:var(--ink2);line-height:1.9;padding-bottom:4px}
+  .mast-right .k{letter-spacing:.16em;text-transform:uppercase;font-size:9.5px;color:var(--ink3)}
+  .mast-right .v{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+
+  /* ── by the numbers ───────────────────────────────────── */
+  .numbers{display:flex;border-bottom:1px solid var(--rule);padding:0}
+  .num{flex:1;padding:16px 22px 15px;border-left:1px solid var(--hair2)}
+  .num:first-child{border-left:none;padding-left:0}
+  .num .v{font-family:var(--serif);font-size:38px;line-height:1;letter-spacing:-.01em}
+  .num .v sup{font-size:14px;color:var(--red);font-style:italic;margin-left:2px}
+  .num .k{font-family:var(--data);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink2);margin-top:7px}
+  .num .s{font-style:italic;font-size:12px;color:var(--ink3);margin-top:2px}
+  .num.accent .v{color:var(--red)}
+
+  /* ── controls ─────────────────────────────────────────── */
+  .controls{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 0;padding:13px 0 11px;border-bottom:1px solid var(--hair)}
+  .cgrp{display:flex;align-items:baseline;margin-right:34px}
+  .clabel{font-family:var(--data);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);margin-right:12px}
+  .chip{background:none;border:none;cursor:pointer;font-family:var(--data);font-size:11.5px;letter-spacing:.06em;
+        color:var(--ink2);padding:2px 1px;margin-right:16px;border-bottom:2px solid transparent}
+  .chip:hover{color:var(--ink)}
+  .chip.on{color:var(--ink);font-weight:600;border-bottom-color:var(--red)}
+  select{background:transparent;border:none;border-bottom:1px solid var(--hair);font-family:var(--data);
+         font-size:11.5px;color:var(--ink);padding:2px 2px;margin-right:16px;cursor:pointer;outline:none}
+  .search{margin-left:auto}
+  .search input{background:transparent;border:none;border-bottom:1px solid var(--hair);width:230px;
+    font-family:var(--serif);font-style:italic;font-size:13.5px;color:var(--ink);padding:3px 2px;outline:none}
+  .search input::placeholder{color:var(--ink3)}
+  .search input:focus{border-bottom-color:var(--red)}
+
+  /* ── sort line ────────────────────────────────────────── */
+  .sortline{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0 8px;
+            font-style:italic;font-size:12.5px;color:var(--ink2)}
+  .sortline b{font-style:normal;font-weight:600;color:var(--ink)}
+  .sortline .n{font-family:var(--data);font-style:normal;font-size:10.5px;letter-spacing:.14em;
+               text-transform:uppercase;color:var(--ink3);font-variant-numeric:tabular-nums}
+  .sortline .n b{font-family:var(--data)}
+
+  /* ── table ────────────────────────────────────────────── */
+  .tblwrap{overflow-x:auto;border-top:2px solid var(--rule)}
+  table{border-collapse:collapse;width:100%;min-width:1600px}
+  thead th{position:sticky;top:0;background:var(--paper);z-index:2;font-family:var(--data);
+    font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--ink2);
+    padding:9px 9px 7px;border-bottom:1px solid var(--rule);text-align:right;cursor:pointer;user-select:none;white-space:nowrap;vertical-align:bottom}
+  thead th:hover{color:var(--red)}
+  thead th.l{text-align:left}
+  thead th.gs{border-left:1px solid var(--hair2)}
+  thead th .dir{color:var(--red)}
+  thead th .u{display:block;font-weight:400;letter-spacing:.06em;color:var(--ink3);font-size:8px;text-transform:none}
+  tbody td{padding:7px 9px;border-bottom:1px solid var(--hair2);font-family:var(--data);font-size:12px;
+    text-align:right;white-space:nowrap;vertical-align:middle;font-variant-numeric:tabular-nums}
+  tbody td.l{text-align:left}
+  tbody td.gs{border-left:1px solid var(--hair2)}
+  tbody tr:hover{background:var(--hl)}
+  tbody tr.chronic td{color:var(--ink3)}
+  tbody tr.chronic .nm .n1,tbody tr.chronic .tick a{color:var(--ink3)}
+  tbody tr:nth-child(5n) td{border-bottom-color:var(--hair)}
+  .rk{color:var(--ink3);font-size:10px}
+  .tick{position:relative}
+  .tick a{font-weight:700;text-decoration:none;font-size:12.5px;letter-spacing:.02em}
+  .tick a:hover{color:var(--red)}
+  .tick .ex{color:var(--ink3);font-size:9px;margin-left:5px;letter-spacing:.06em}
+  .freshbar{position:absolute;left:-1px;top:15%;height:70%;width:3px;background:var(--red)}
+  .nm{font-family:var(--serif);max-width:200px;overflow:hidden;text-overflow:ellipsis}
+  .nm .n1{font-size:12.5px;overflow:hidden;text-overflow:ellipsis}
+  .nm .n2{font-style:italic;color:var(--ink3);font-size:11px;margin-top:0;overflow:hidden;text-overflow:ellipsis}
+  .sec{font-family:var(--serif);font-style:italic;color:var(--ink2);font-size:11.5px;max-width:110px;overflow:hidden;text-overflow:ellipsis}
+  .wrw{font-weight:700;font-size:12.5px}
+  .glyph{display:inline-block;width:14px;text-align:left;font-size:11px}
+  .z90 .wrw,.z100 .wrw{color:var(--down)}
+  .z80 .glyph{color:var(--ink2)} .z90 .glyph{color:var(--red)} .z100 .glyph{color:var(--ink)}
+  .z0 .wrw{font-weight:400;color:var(--ink2)}
+  .small{color:var(--ink2);font-size:11px}
+  .pos{color:var(--up)} .neg{color:var(--down)} .mut{color:var(--ink3)}
+  .newmark{color:var(--red);font-weight:700;font-size:10px;letter-spacing:.08em;margin-left:5px}
+  .note-sym{color:var(--ink3);margin-left:4px;font-family:var(--serif)}
+  .trig{font-size:11px;color:var(--ink2)}
+  .trig b{font-weight:600;color:var(--ink)}
+  .trig .t90x{color:var(--down)}
+  .in80{color:var(--red);font-weight:700;font-size:10px;letter-spacing:.1em}
+  svg.spk{display:block}
+  .more{display:block;margin:18px auto 0;background:none;border:1px solid var(--hair);color:var(--ink2);
+    font-family:var(--data);font-size:10px;letter-spacing:.2em;padding:10px 36px;cursor:pointer}
+  .more:hover{border-color:var(--red);color:var(--red)}
+  .empty{padding:56px;text-align:center;font-style:italic;color:var(--ink3)}
+
+  /* ── notes ────────────────────────────────────────────── */
+  .notes{margin-top:46px;border-top:3px solid var(--rule);position:relative}
+  .notes::after{content:"";display:block;border-top:1px solid var(--rule);margin-top:2px}
+  .notes-inner{display:grid;grid-template-columns:1.15fr 1fr;gap:56px;padding:22px 0 4px}
+  .notes h3{font-family:var(--data);font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+            font-weight:600;color:var(--ink);margin-bottom:14px}
+  .notes h3 span{color:var(--red)}
+  .notes p{font-size:13.5px;color:var(--ink2);line-height:1.65;margin-bottom:10px}
+  .notes p b{color:var(--ink);font-weight:600}
+  .notes p i{font-style:italic}
+  .notes .no{font-family:var(--serif);font-style:italic;color:var(--red);margin-right:8px}
+  .formula{font-family:var(--data);font-size:12px;background:var(--paper2);padding:2px 6px;font-variant-numeric:tabular-nums}
+  .legendline{margin-top:8px;padding-top:14px;border-top:1px solid var(--hair2);font-size:12.5px;font-style:italic;color:var(--ink2)}
+  .legendline .glyph{width:auto;margin:0 2px 0 10px}
+  .source{margin-top:26px;padding-top:10px;border-top:1px solid var(--hair);display:flex;justify-content:space-between;
+          font-family:var(--data);font-size:10px;letter-spacing:.06em;color:var(--ink3)}
+  @media(max-width:1100px){.numbers{flex-wrap:wrap}.num{min-width:45%}.notes-inner{grid-template-columns:1fr}}
+
+  /* ── timeframe tabs ───────────────────────────────────── */
+  .tabs{display:flex;align-items:baseline}
+  .tabbtn{background:none;border:none;cursor:pointer;font-family:var(--data);font-size:10.5px;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);padding:2px 0}
+  .tabbtn.on{color:var(--ink);font-weight:600}
+  .tabbtn:hover{color:var(--red)}
+  .tabsep{color:var(--ink3);margin:0 10px}
+  .stale-anchor{color:var(--ink3);cursor:help;margin-left:3px;font-family:var(--serif)}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="rule-heavy"></div>
+<div class="rule-thin"></div>
+<div class="folio">
+  <div><b>Mithril</b> Markets</div>
+  <div class="tabs"><button class="tabbtn on" id="tabWeekly">Weekly %R</button><span class="tabsep">·</span><button class="tabbtn" id="tabMonthly">Monthly %R</button><span class="tabsep">·</span><span class="red">The Buy Zone</span></div>
+  <div>As of <b id="asof">·</b> · London</div>
+</div>
+
+<div class="masthead">
+  <div>
+    <h1>The Oversold Ledger<span class="amp">.</span></h1>
+    <div class="standfirst" id="standfirst">Every stock in the lake whose <b>weekly Williams %R(14)</b> has sunk to
+    &minus;80 or beyond, judged on tonight's close; the freshly fallen first, the chronically
+    depressed set in grey. Trigger prices give the close that would print each level for
+    names not yet there.</div>
+  </div>
+  <div class="mast-right">
+    <div class="k">Basis</div>
+    <div>Split-adjusted OHLC · yfinance</div>
+    <div class="k" style="margin-top:8px">Levels</div>
+    <div>&minus;80 <span class="glyph">○</span> &nbsp; &minus;90 <span class="glyph" style="color:var(--red)">●</span> &nbsp; &minus;100 <span class="glyph">■</span></div>
+  </div>
+</div>
+
+<div class="numbers">
+  <div class="num"><div class="v" id="stUni">·</div><div class="k">Universe</div><div class="s" id="uniSub">tickers with a valid weekly reading</div></div>
+  <div class="num"><div class="v" id="stZone">·</div><div class="k">In the zone</div><div class="s" id="zoneSub">weekly %R at or below &minus;80</div></div>
+  <div class="num accent"><div class="v" id="stFresh">·<sup>new</sup></div><div class="k">Fresh · three days or fewer</div><div class="s">the hunting list</div></div>
+  <div class="num"><div class="v" id="stDeep">·</div><div class="k">Deep · &minus;90 and below</div><div class="s">capitulation tier</div></div>
+  <div class="num"><div class="v" id="stUp">·</div><div class="k">Zone, in uptrend</div><div class="s">above a rising 200-day mean</div></div>
+</div>
+
+<div class="controls">
+  <div class="cgrp"><span class="clabel">View</span>
+    <button class="chip on" data-v="zone" id="vzone">In zone</button>
+    <button class="chip" data-v="near">Near, within 5%</button>
+    <button class="chip" data-v="all">Everything</button>
+  </div>
+  <div class="cgrp"><span class="clabel">Tier</span>
+    <button class="chip on" data-t="80">&minus;80</button>
+    <button class="chip on" data-t="90">&minus;90</button>
+    <button class="chip on" data-t="100">&minus;100</button>
+  </div>
+  <div class="cgrp"><span class="clabel">Cut</span>
+    <button class="chip" id="fFresh">Fresh only</button>
+    <button class="chip" id="fAbove">Above 200d</button>
+    <button class="chip" id="fRising">Rising 200d</button>
+    <button class="chip on" id="fChronic">Hide chronic</button>
+  </div>
+  <div class="cgrp">
+    <select id="fSec"><option value="">All sectors</option></select>
+    <select id="fCap">
+      <option value="0">Any size</option><option value="2e9">Over $2bn</option>
+      <option value="1e10">Over $10bn</option><option value="5e10">Over $50bn</option><option value="2e11">Over $200bn</option>
+    </select>
+  </div>
+  <div class="search"><input id="q" placeholder="Find a ticker, name or industry…" autocomplete="off"></div>
+</div>
+
+<div class="sortline">
+  <div id="sortDesc">Sorted by <b>signal rank</b>: the freshest entries first, then the deepest, then the names whose past dips were briefest. Click any column head to re-order.</div>
+  <div class="n"><b id="nShown">0</b> of <b id="nMatch">0</b> shown</div>
+</div>
+
+<div class="tblwrap">
+<table>
+  <thead><tr>
+    <th class="l" data-k="rank">N°</th>
+    <th class="l" data-k="t">Ticker</th>
+    <th class="l" data-k="name">Company / Industry</th>
+    <th class="l" data-k="sec">Sector</th>
+    <th data-k="mcap">Mkt cap</th>
+    <th data-k="px">Price</th>
+    <th class="gs" data-k="wrW">%R<span class="u">weekly</span></th>
+    <th data-k="wrD">%R<span class="u">daily</span></th>
+    <th data-k="wrM">%R<span class="u">monthly</span></th>
+    <th class="l" data-k="spark" id="thSpark">Twelve months, weekly<span class="u">shaded band = the zone</span></th>
+    <th class="gs" data-k="fresh" title="Trading days in the current oversold episode">Days in<span class="u">episode</span></th>
+    <th data-k="epi" id="thEpi" title="Oversold episodes, trailing two years">Episodes<span class="u">2 yrs</span></th>
+    <th data-k="medlen" id="thMed" title="Median episode length">Median<span class="u">dip, days</span></th>
+    <th data-k="share" id="thShare" title="Share of trading days in the zone, 2 yrs">Time in<span class="u">zone</span></th>
+    <th class="l gs" data-k="fall80" id="thTrig" title="The close that would print each level this week">Trigger closes<span class="u">−80 · −90 · −100</span></th>
+    <th data-k="fall80" id="thFall" title="Fall required to print weekly −80">Fall to<span class="u">−80</span></th>
+    <th class="gs" data-k="d200" title="Distance from the 200-day mean; arrow = slope">200-day</th>
+    <th data-k="w200" title="Distance from the 200-week mean; arrow = slope">200-week</th>
+    <th data-k="rs6" title="Six-month return less SPY">Rel. SPY<span class="u">6 mo</span></th>
+  </tr></thead>
+  <tbody id="tb"></tbody>
+</table>
+<div class="empty" id="empty" style="display:none">Nothing matches; loosen a filter.</div>
+</div>
+<button class="more" id="more" style="display:none">SHOW 400 MORE</button>
+
+<div class="notes">
+  <div class="notes-inner">
+    <div>
+      <h3>Before you buy <span>· read this</span></h3>
+      <p><span class="no">i.</span><b>Oversold gets more oversold.</b> A &minus;80 print above a rising 200-day mean is often the first leg of a breakdown; the average lags a top by months. The trend filter reduces this risk, it does not remove it.</p>
+      <p><span class="no">ii.</span><b>The dip may be information.</b> Fresh, deep prints cluster on earnings gaps and bad news. Establish <i>why</i> it fell before treating the fall as noise; earnings dates are not in this table.</p>
+      <p><span class="no">iii.</span><b>Correlated firing.</b> In a correction hundreds of rows light at once. That is one market bet, not many independent ones.</p>
+      <p><span class="no">iv.</span><b>Candidates, not edge.</b> Nothing here is backtested as a signal. Sizing, the regime gate and the discipline to hold decide returns.</p>
+    </div>
+    <div>
+      <h3>Method <span>· in brief</span></h3>
+      <p><span class="formula">%R = (HH − C) ÷ (HH − LL) × −100</span> over fourteen bars; the close that prints level L is <span class="formula">T = (1−p)·HH + p·LL</span>, <span class="formula">p = |L|/100</span>.</p>
+      <p id="methodNote">The weekly reading is evaluated on every daily close (the forming week plus thirteen complete ones), so freshness is counted in trading days. An episode tolerates a single day's pop above &minus;80. <b>Chronic</b> means in the zone more than a quarter of the past two years. Triggers are exact for an orderly close onto the level; a capitulation that widens the range puts the true trigger lower.</p>
+      <div class="legendline" id="legendLine">Marks: <span class="glyph">○</span> at &minus;80 <span class="glyph" style="color:var(--red)">●</span> at &minus;90 <span class="glyph">■</span> at the fourteen-week low · red edge-bar and <span style="color:var(--red);font-style:normal;font-weight:700;font-size:11px">NEW</span> = entered within three days · ‡ fewer than two years of history · greyed rows are chronic or stale.</div>
+    </div>
+  </div>
+  <div class="source">
+    <div>Source: yfinance (split-adjusted, dividend-unadjusted, matches TradingView) · Universe: US majors over $2bn plus LSE/EU legacy names · refreshed daily on weekday mornings</div>
+    <div>Compiled <span id="built"></span> · Mithril</div>
+  </div>
+</div>
+</div>
+
+<script>
+const PAYLOADS = { weekly: __PAYLOAD_WEEKLY__, monthly: __PAYLOAD_MONTHLY__ };
+
+const TF = {
+  weekly: {
+    standfirst: 'Every stock in the lake whose <b>weekly Williams %R(14)</b> has sunk to −80 or beyond, judged on tonight’s close; the freshly fallen first, the chronically depressed set in grey. Trigger prices give the close that would print each level for names not yet there.',
+    uniSub: 'tickers with a valid weekly reading', zoneSub: 'weekly %R at or below −80',
+    sparkCap: 'Twelve months, weekly<span class="u">shaded band = the zone</span>',
+    epiHead: 'Episodes<span class="u">2 yrs</span>', epiTip: 'Oversold episodes, trailing two years',
+    medHead: 'Median<span class="u">dip, days</span>', medTip: 'Median episode length, trading days',
+    shareHead: 'Time in<span class="u">zone</span>', shareTip: 'Share of trading days in the zone, 2 yrs',
+    trigTip: 'The close that would print each level this week', fallTip: 'Fall required to print weekly −80',
+    methodNote: 'The weekly reading is evaluated on every daily close (the forming week plus thirteen complete ones), so freshness is counted in trading days. An episode tolerates a single day’s pop above −80. <b>Chronic</b> means in the zone more than a quarter of the past two years. Triggers are exact for an orderly close onto the level; a capitulation that widens the range puts the true trigger lower.',
+    legend: 'Marks: <span class="glyph">○</span> at −80 <span class="glyph" style="color:var(--red)">●</span> at −90 <span class="glyph">■</span> at the fourteen-week low · red edge-bar and <span style="color:var(--red);font-style:normal;font-weight:700;font-size:11px">NEW</span> = entered within three days · ‡ fewer than two years of history · greyed rows are chronic or stale.',
+    histTip: n => `only ${n} computable days in the two-year window`, histThresh: 480,
+    unitWord: 'week', sortDefault: 'Sorted by <b>signal rank</b>: the freshest entries first, then the deepest, then the names whose past dips were briefest. Click any column head to re-order.',
+    epiSort: 'Sorted by <b>episode count</b> over two years.', medSort: 'Sorted by <b>median dip length</b>.',
+  },
+  monthly: {
+    standfirst: 'Every stock in the lake whose <b>monthly Williams %R(14)</b> has sunk to −80 or beyond, judged on tonight’s close; the freshly fallen first, the chronically depressed set in grey. Trigger prices give the close that would print each level for names not yet there.',
+    uniSub: 'tickers with a valid monthly reading', zoneSub: 'monthly %R at or below −80',
+    sparkCap: 'Five years, monthly<span class="u">shaded band = the zone</span>',
+    epiHead: 'Episodes<span class="u">5 yrs</span>', epiTip: 'Oversold episodes, trailing five years of monthly bars',
+    medHead: 'Median<span class="u">dip, months</span>', medTip: 'Median episode length, monthly bars',
+    shareHead: 'Time in<span class="u">zone</span>', shareTip: 'Share of monthly bars in the zone, 5 yrs',
+    trigTip: 'The close that would print each level this month', fallTip: 'Fall required to print monthly −80',
+    methodNote: 'The monthly reading is evaluated on every daily close (the forming month plus thirteen complete ones), so the live value and triggers are responsive within the month. Lingering, though, is judged on monthly BARS over a trailing five years, not trading days: a single monthly episode already runs ~21 days, so a day-based share would read chronic after just two or three dips. <b>Chronic</b> means in the zone more than a quarter of the last sixty months. A fourteen-month window can also anchor its floor on one old capitulation month for most of a year; a stale-anchor mark <span class="stale-anchor" title="example">◇</span> flags a trigger set ten or more months ago. This public build keeps a trailing ~500-day window for the "days in episode" figure specifically (the private tool keeps more); it only undercounts an episode that has run continuously, with no exit, for two-plus years. Chronic, episode count and median length are unaffected, they read off monthly bars, not this window.',
+    legend: 'Marks: <span class="glyph">○</span> at −80 <span class="glyph" style="color:var(--red)">●</span> at −90 <span class="glyph">■</span> at the fourteen-month low · red edge-bar and <span style="color:var(--red);font-style:normal;font-weight:700;font-size:11px">NEW</span> = entered within three days · ‡ fewer than four years of history · <span class="stale-anchor">◇</span> floor anchored 10+ months ago · greyed rows are chronic or stale.',
+    histTip: n => `only ${n} of 60 monthly bars computable`, histThresh: 48,
+    unitWord: 'month', sortDefault: 'Sorted by <b>signal rank</b>: the freshest entries first, then the deepest, then the names whose past dips were briefest. Click any column head to re-order.',
+    epiSort: 'Sorted by <b>episode count</b> over five years.', medSort: 'Sorted by <b>median dip length</b>.',
+  },
+};
+
+let TAB = 'weekly';
+let rows = [];
+const rankedOnce = { weekly:false, monthly:false };
+
+function rankDataset(rs){
+  rs.forEach(r=>{
+    let s = 0;
+    if (r.zone>0 && !r.stale){
+      s = 1e9;
+      s -= (r.fresh==null?500:Math.min(r.fresh,500))*1e6;
+      s += r.zone*1e4;
+      s -= (r.medlen==null?250:Math.min(r.medlen,250))*200;
+      s += (r.rs6==null?0:Math.max(-50,Math.min(50,r.rs6)));
+    } else if (!r.stale && r.fall80!=null && r.fall80<5 && r.fall80>0){
+      s = 1e6 - r.fall80*1e3;
+    } else if (!r.stale){
+      s = -(r.fall80==null?9e4:r.fall80*100);
+    } else s = -1e9;
+    r.rank = s;
+  });
+}
+
+const S = { view:'zone', tiers:new Set([80,90,100]), fresh:false, above:false,
+            rising:false, chronic:true, sec:'', cap:0, q:'', sort:'rank', dir:-1, cap_n:400 };
+
+const $ = id=>document.getElementById(id);
+const fmtCap = v => v==null ? '<span class="mut">–</span>' :
+  v>=1e12 ? '$'+(v/1e12).toFixed(2)+'tn' : v>=1e9 ? '$'+(v/1e9).toFixed(1)+'bn' : '$'+(v/1e6).toFixed(0)+'m';
+const fmtPx = v => v==null?'–': v>=1000?v.toFixed(0):v>=100?v.toFixed(1):v.toFixed(2);
+const pct = v => v==null ? '<span class="mut">–</span>' :
+  `<span class="${v>=0?'pos':'neg'}">${v>0?'+':''}${v.toFixed(1)}%</span>`;
+const glyph = z => z>=100?'■':z>=90?'●':z>=80?'○':'';
+const wrCls = z => z>=100?'z100':z>=90?'z90':z>=80?'z80':'z0';
+const TV_EXCH = [['.L','LSE'],['.MI','MIL'],['.TO','TSX'],['.PA','EURONEXT'],
+                  ['.MC','BME'],['.DE','XETR'],['.AS','EURONEXT']];
+const tvSym = t => {
+  const hit = TV_EXCH.find(([suf])=>t.endsWith(suf));
+  return hit ? hit[1]+':'+t.slice(0,-hit[0].length).replace(/\./g,'') : t.replace('-','.');
+};
+
+function spark(r){
+  const vs = r.spark || [], W=124, H=30;
+  const pts = [];
+  vs.forEach((v,i)=>{ if(v!=null) pts.push(((i/(vs.length-1))*W).toFixed(1)+','+((-v/100)*(H-2)+1).toFixed(1)); });
+  if (pts.length<2) return '';
+  const last = vs[vs.length-1];
+  const dotc = last<=-80?'#e3120b':'#9a9186';
+  const [lx,ly] = pts[pts.length-1].split(',');
+  return `<svg class="spk" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    <rect x="0" y="${(H-2)*0.8+1}" width="${W}" height="${(H-2)*0.2}" fill="rgba(227,18,11,.07)"/>
+    <line x1="0" y1="${(H-2)*0.8+1}" x2="${W}" y2="${(H-2)*0.8+1}" stroke="rgba(227,18,11,.45)" stroke-width=".6" stroke-dasharray="1.5 2.5"/>
+    <polyline points="${pts.join(' ')}" fill="none" stroke="#66605a" stroke-width="1"/>
+    <circle cx="${lx}" cy="${ly}" r="2.1" fill="${dotc}"/></svg>`;
+}
+
+function filt(){
+  const q = S.q.toUpperCase();
+  return rows.filter(r=>{
+    if (r.stale && S.view!=='all') return false;
+    if (S.view==='zone' && r.zone===0) return false;
+    if (S.view==='near' && !(r.zone>0 || (r.fall80!=null && r.fall80>0 && r.fall80<5))) return false;
+    if (r.zone>0 && !S.tiers.has(r.zone)) return false;
+    if (S.fresh && !(r.fresh!=null && r.fresh<=3)) return false;
+    if (S.above && !(r.d200!=null && r.d200>0)) return false;
+    if (S.rising && r.s200!==true) return false;
+    if (S.chronic && r.chronic && S.view!=='all') return false;
+    if (S.sec && r.sec!==S.sec) return false;
+    if (S.cap>0 && !(r.mcap!=null && r.mcap>=S.cap)) return false;
+    if (q && !(r.t.toUpperCase().includes(q) || (r.name||'').toUpperCase().includes(q)
+            || (r.ind||'').toUpperCase().includes(q))) return false;
+    return true;
+  });
+}
+
+function cmp(a,b){
+  const k=S.sort, av=a[k], bv=b[k];
+  if (k==='t'||k==='name'||k==='sec') return S.dir*String(av||'').localeCompare(String(bv||''));
+  if (av==null && bv==null) return 0;
+  if (av==null) return 1; if (bv==null) return -1;
+  return S.dir*(av-bv);
+}
+
+function sortDescs(){
+  const cfg = TF[TAB];
+  return {
+    rank: cfg.sortDefault,
+    wrW:'Sorted by <b>weekly %R</b>.', wrD:'Sorted by <b>daily %R</b>.', wrM:'Sorted by <b>monthly %R</b>.',
+    mcap:'Sorted by <b>market capitalisation</b>.', px:'Sorted by <b>price</b>.',
+    fresh:'Sorted by <b>days in the current episode</b>.', epi: cfg.epiSort,
+    medlen: cfg.medSort, share:'Sorted by <b>time spent in the zone</b>.',
+    fall80:'Sorted by <b>the fall required to print −80</b>.', d200:'Sorted by <b>distance from the 200-day mean</b>.',
+    w200:'Sorted by <b>distance from the 200-week mean</b>.', rs6:'Sorted by <b>six-month strength against SPY</b>.',
+    t:'Sorted <b>alphabetically by ticker</b>.', name:'Sorted <b>alphabetically by company</b>.', sec:'Sorted <b>by sector</b>.'
+  };
+}
+
+function render(){
+  const m = filt().sort(cmp);
+  const shown = m.slice(0, S.cap_n);
+  $('nMatch').textContent = m.length; $('nShown').textContent = shown.length;
+  $('empty').style.display = m.length? 'none':'block';
+  $('more').style.display = m.length>S.cap_n ? 'block':'none';
+  $('tb').innerHTML = shown.map((r,i)=>{
+    const z = wrCls(r.zone);
+    const isNew = r.fresh!=null && r.fresh<=3;
+    const freshCell = r.fresh==null ? '<span class="mut">–</span>' :
+      `<b>${r.fresh}</b>${isNew?'<span class="newmark">NEW</span>':''}`;
+    const slope = r.s200==null?'':` <span class="${r.s200?'pos':'neg'}">${r.s200?'▲':'▼'}</span>`;
+    const wslope = r.sw200==null?'':` <span class="${r.sw200?'pos':'neg'}">${r.sw200?'▲':'▼'}</span>`;
+    const cfg = TF[TAB];
+    const short = r.hist!=null && r.hist<cfg.histThresh ? `<span class="note-sym" title="${cfg.histTip(r.hist)}">‡</span>` : '';
+    const staleAnchor = r.trig_age!=null && r.trig_age>=10 ? `<span class="stale-anchor" title="the ${TAB} floor is anchored by an extreme set ${r.trig_age} ${cfg.unitWord}s ago">◇</span>` : '';
+    const primary = TAB==='monthly' ? 'wrM' : 'wrW';
+    const rCell = (field) => field===primary
+      ? `<span class="glyph">${glyph(r.zone)}</span><span class="wrw">${r[field]==null?'–':r[field].toFixed(1)}</span>`
+      : (r[field]==null?'–':r[field].toFixed(0));
+    return `<tr class="${z} ${r.chronic?'chronic':''}">
+      <td class="l rk">${i+1}</td>
+      <td class="l tick">${isNew&&r.zone>0?'<span class="freshbar"></span>':''}<a href="https://www.tradingview.com/chart/?symbol=${encodeURIComponent(tvSym(r.t))}" target="_blank">${r.t}</a><span class="ex">${r.exch||''}</span>${r.stale?`<span class="note-sym" title="last bar ${r.d}">†stale</span>`:''}</td>
+      <td class="l nm"><div class="n1">${r.name||''}</div><div class="n2">${r.ind||''}</div></td>
+      <td class="l sec">${r.sec||'<span class="mut">–</span>'}</td>
+      <td>${fmtCap(r.mcap)}</td>
+      <td class="${r.stale?'mut':''}">${fmtPx(r.px)}</td>
+      <td class="gs">${rCell('wrW')}</td>
+      <td class="small">${rCell('wrD')}</td>
+      <td class="small">${rCell('wrM')}</td>
+      <td class="l">${spark(r)}</td>
+      <td class="gs">${freshCell}</td>
+      <td class="small">${r.epi==null?'–':r.epi}</td>
+      <td class="small">${r.medlen==null?'–':r.medlen}</td>
+      <td class="small">${r.share==null?'–':r.share.toFixed(0)+'%'}${short}</td>
+      <td class="l gs trig"><b>${fmtPx(r.t80)}</b> · <span class="t90x">${fmtPx(r.t90)}</span> · ${fmtPx(r.t100)}${staleAnchor}</td>
+      <td>${r.fall80==null?'–': r.fall80<=0 ? '<span class="in80">IN</span>' : `${r.fall80.toFixed(1)}%`}</td>
+      <td class="gs">${pct(r.d200)}${slope}</td>
+      <td>${pct(r.w200)}${wslope}</td>
+      <td>${pct(r.rs6)}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* stats */
+function refreshStats(){
+  const live = rows.filter(r=>!r.stale);
+  $('stUni').textContent = live.length.toLocaleString();
+  $('stZone').textContent = live.filter(r=>r.zone>0).length;
+  $('stFresh').innerHTML = live.filter(r=>r.zone>0 && r.fresh!=null && r.fresh<=3).length + '<sup>new</sup>';
+  $('stDeep').textContent = live.filter(r=>r.zone>=90).length;
+  $('stUp').textContent = live.filter(r=>r.zone>0 && r.d200!=null && r.d200>0 && r.s200).length;
+
+  const cur = $('fSec').value;
+  $('fSec').innerHTML = '<option value="">All sectors</option>';
+  [...new Set(live.map(r=>r.sec).filter(Boolean))].sort().forEach(s=>{
+    const o=document.createElement('option'); o.value=s; o.textContent=s; $('fSec').appendChild(o);
+  });
+  $('fSec').value = [...$('fSec').options].some(o=>o.value===cur) ? cur : '';
+  S.sec = $('fSec').value;
+}
+
+function applyCopy(){
+  const cfg = TF[TAB];
+  $('standfirst').innerHTML = cfg.standfirst;
+  $('uniSub').textContent = cfg.uniSub;
+  $('zoneSub').textContent = cfg.zoneSub;
+  $('thSpark').innerHTML = cfg.sparkCap;
+  $('thEpi').innerHTML = cfg.epiHead; $('thEpi').title = cfg.epiTip;
+  $('thMed').innerHTML = cfg.medHead; $('thMed').title = cfg.medTip;
+  $('thShare').innerHTML = cfg.shareHead; $('thShare').title = cfg.shareTip;
+  $('thTrig').title = cfg.trigTip; $('thFall').title = cfg.fallTip;
+  $('methodNote').innerHTML = cfg.methodNote;
+  $('legendLine').innerHTML = cfg.legend;
+}
+
+function switchTab(tf){
+  TAB = tf;
+  document.getElementById('tabWeekly').classList.toggle('on', tf==='weekly');
+  document.getElementById('tabMonthly').classList.toggle('on', tf==='monthly');
+  rows = PAYLOADS[tf].rows;
+  if (!rankedOnce[tf]){ rankDataset(rows); rankedOnce[tf]=true; }
+  $('asof').textContent = PAYLOADS[tf].asof; $('built').textContent = PAYLOADS[tf].built;
+  applyCopy();
+  S.sort='rank'; S.dir=-1; S.cap_n=400; S.q=''; $('q').value='';
+  document.querySelectorAll('thead th .dir').forEach(el=>el.remove());
+  $('sortDesc').innerHTML = TF[tf].sortDefault;
+  refreshStats();
+  render();
+}
+
+/* events */
+let deb; $('q').addEventListener('input', e=>{clearTimeout(deb);deb=setTimeout(()=>{S.q=e.target.value;S.cap_n=400;render();},150);});
+document.querySelectorAll('[data-v]').forEach(b=>b.addEventListener('click', ()=>{
+  document.querySelectorAll('[data-v]').forEach(c=>c.classList.remove('on')); b.classList.add('on');
+  S.view=b.dataset.v; S.cap_n=400; render(); }));
+document.querySelectorAll('[data-t]').forEach(b=>b.addEventListener('click', ()=>{
+  const t=+b.dataset.t; b.classList.toggle('on');
+  b.classList.contains('on') ? S.tiers.add(t) : S.tiers.delete(t); render(); }));
+[['fFresh','fresh'],['fAbove','above'],['fRising','rising'],['fChronic','chronic']].forEach(([id,k])=>{
+  $(id).addEventListener('click', ()=>{ $(id).classList.toggle('on'); S[k]=$(id).classList.contains('on'); render(); });
+});
+$('fSec').addEventListener('change', e=>{S.sec=e.target.value;render();});
+$('fCap').addEventListener('change', e=>{S.cap=+e.target.value;render();});
+$('more').addEventListener('click', ()=>{S.cap_n+=400;render();});
+document.querySelectorAll('thead th').forEach(th=>th.addEventListener('click', ()=>{
+  const k=th.dataset.k; if(!k||k==='spark')return;
+  if (S.sort===k) S.dir*=-1; else {S.sort=k; S.dir = (k==='t'||k==='name'||k==='sec')?1:(k==='fresh'||k==='medlen'||k==='fall80'||k==='share'||k==='epi'||k==='wrW'||k==='wrD'||k==='wrM')?1:-1;}
+  document.querySelectorAll('thead th .dir').forEach(el=>el.remove());
+  th.insertAdjacentHTML('beforeend',`<span class="dir"> ${S.dir>0?'↑':'↓'}</span>`);
+  $('sortDesc').innerHTML = (sortDescs()[k]||'') + (k==='rank'?'':' Click again to reverse; N° restores the signal rank.');
+  render();
+}));
+$('tabWeekly').addEventListener('click', ()=>switchTab('weekly'));
+$('tabMonthly').addEventListener('click', ()=>switchTab('monthly'));
+
+switchTab('weekly');
+</script>
+</body>
+</html>
